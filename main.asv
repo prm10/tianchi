@@ -1,0 +1,7 @@
+clc;clear;close all;
+
+data=importdata('data/song_times.mat');
+% imagesc(data)
+
+[r,in]=sort(sum(data,2),1,'descend');
+plot(data(in(1),:))
