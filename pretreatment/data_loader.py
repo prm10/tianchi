@@ -39,8 +39,8 @@ class SongClass:
         for song_id, artist_id, publish_time, song_init_plays, Language, Gender in reader:
             self.song_artist_dict.setdefault(song_id, set()).add(artist_id)
             self.artist_song_dict.setdefault(artist_id, set()).add(song_id)
-        print len(self.song_artist_dict), ' songs recorded'
         print len(self.artist_song_dict), ' artists recorded'
+        print len(self.song_artist_dict), ' songs recorded'
 
 
 class UserClass:
