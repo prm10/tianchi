@@ -28,6 +28,28 @@ def show_result(result):
             print artist, '\t', ds, '\t', num
 
 
+def get_song_publish_time(song_id0):
+    reader = csv.reader(open("data/mars_tianchi_songs.csv"))
+    for song_id, artist_id, publish_time, song_init_plays, Language, Gender in reader:
+        if song_id0 == song_id:
+            return publish_time
+    return None
+
+
+def load_mat(filename):
+    return sio.loadmat('data/' + filename + '.mat')
+
+
+def song_heard(song_dict):
+    # 统计歌曲次数：歌曲序号、时间序号、行为种类
+    song_times = numpy.zeros([len(song_dict), date_diff('20150831', '20150301'), 3], numpy.uint16)
+    reader = csv.reader(open("data/mars_tianchi_user_actions.csv"))
+    for user_id, song_id, gmt_create, action_type, ds in reader:
+        # if action_type == '1' and '20150301' <= ds < '20150701':
+        song_times[song_dict[song_id], date_diff(ds, '20150301'), int(action_type) - 1] += 1
+    sio.savemat('data/song_times.mat', {'song_times': song_times})
+
+
 class SongClass:
     def __init__(self):
         self.song_artist_dict = {}
@@ -60,21 +82,6 @@ class UserClass:
                     self.val_result.setdefault(artist, {}).setdefault(ds, 0)
                     self.val_result[artist][ds] += 1
         print 'records of %d artists of validation has generated.' % len(self.val_result)
-
-    def song_heard(self, sad):
-        self.song_list = sad.keys()
-        self.song_dict = dict.fromkeys(self.song_list, 0)
-        i = 0
-        for song_id in self.song_list:
-            self.song_dict[song_id] = i
-            i += 1
-
-        song_times = numpy.zeros([len(self.song_dict), date_diff('20150701', '20150301')], numpy.uint16)
-        reader = csv.reader(open("data/mars_tianchi_user_actions.csv"))
-        for user_id, song_id, gmt_create, action_type, ds in reader:
-            if action_type == '1' and '20150301' <= ds < '20150701':
-                song_times[self.song_dict[song_id], date_diff(ds, '20150301')] += 1
-        sio.savemat('data/song_times.mat', {'song_times': song_times})
 
     def artist_heard(self, sad, asd):
         self.artist_list = asd.keys()
