@@ -58,7 +58,7 @@ class SongClass:
 
     def song_info_loader(self):
         reader = csv.reader(open("data/mars_tianchi_songs.csv"))
-        for song_id, artist_id, publish_time, song_init_plays, Language, Gender in reader:
+        for song_id, artist_id, publish_time, song_init_plays, language, gender in reader:
             self.song_artist_dict.setdefault(song_id, set()).add(artist_id)
             self.artist_song_dict.setdefault(artist_id, set()).add(song_id)
         print len(self.artist_song_dict), ' artists recorded'
