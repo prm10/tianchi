@@ -50,3 +50,4 @@ data/mars_tianchi_user_actions.zip
 *.pyc
 *.mat
 *.pickle
+*.pyc

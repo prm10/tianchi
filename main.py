@@ -11,7 +11,6 @@ sc = data_loader.SongClass()
 
 # uc.getValidation(sc.song_artist_dict)
 # uc.showResult(uc.val_result)
-
 # uc.songHeard(sc.song_artist_dict)
 # uc.artistHeard(sc.song_artist_dict,sc.artist_song_dict)
 
@@ -23,9 +22,10 @@ ptr = encode.EncodeClass()
 ptr.load_all()
 
 # 扫描用户行为记录表
-# data_loader.song_heard(ptr.song_dict)
+data_loader.song_heard(ptr.song_dict)
+data_loader.artist_heard(ptr.artist_dict, sc.song_artist_dict)
 # 加载用户行为矩阵
-song_times = data_loader.load_mat('song_times')['song_times']
+# song_times = data_loader.load_mat('song_times')['song_times']
 
 # 分析一首歌的趋势
 # x = range(data_loader.date_diff('20150831', '20150301'))
@@ -43,22 +43,25 @@ for i1 in range(0, 10):
 plt.show()
 '''
 # 分析一个artist的歌曲热度
+'''
 n = data_loader.date_diff('20150831', '20150301')
 for i1 in range(10):
-    songs = sc.artist_song_dict[ptr.artist_list[i1]]
-    y = numpy.zeros([n, len(songs)], numpy.uint16)
-    print(str(i1) + ':' + ptr.artist_list[i1])
-    song_index = []
-    for song_id in songs:
-        song_index.append(ptr.song_dict[song_id])
-    song_index = sorted(song_index)
-    i = 0
-    for i2 in song_index:
-        y[:, i] = song_times[i2, :, 1]
-        i += 1
-    plt.figure()
-    plt.plot(numpy.append(y[:,range(10)],y.sum(axis=1).reshape((y.shape[0],1)),axis=1), '-*')
-    lg=map(str,range(10))
-    lg.append('sum')
-    plt.legend(lg)
+	songs = sc.artist_song_dict[ptr.artist_list[i1]]
+	y = numpy.zeros([n, len(songs)], numpy.uint16)
+	print(str(i1) + ':' + ptr.artist_list[i1])
+	song_index = []
+	for song_id in songs:
+		song_index.append(ptr.song_dict[song_id])
+	song_index = sorted(song_index)
+	i = 0
+	for i2 in song_index:
+		y[:, i] = song_times[i2, :, 1]
+		i += 1
+	plt.figure()
+	plt.plot(numpy.append(y[:, range(10)], y.sum(axis=1).reshape((y.shape[0], 1)), axis=1), '-*')
+	lg = map(str, range(10))
+	lg.append('sum')
+	plt.legend(lg)
+	plt.title(str(i1) + ':' + str(y.sum()))
 plt.show()
+'''
