@@ -51,20 +51,15 @@ group by song_id,ds
 --生成每个artist在第k天的播放量
 drop table if exists tianchi.artist_day_plays;
 create table tianchi.artist_day_plays as
-select a.artist_id,b.ds,
-	sum(case when (b.times is null) then 0 else b.times end) as times
+select a.artist_id,b.ds,sum(b.times) as times
 from
-	(select artist_id,song_id,ds from
-		(select artist_id,song_id from 
-		tianchi.mars_tianchi_songs) c
-		,
-		(select distinct ds	from tianchi.song_day_plays
-		) d
+	(select distinct artist_id,song_id from 
+		tianchi.mars_tianchi_songs
 	)a
 	left outer join
 	tianchi.song_day_plays b
-	on a.song_id=b.song_id and a.ds=b.ds
-group by a.artist_id,a.ds
+	on a.song_id=b.song_id
+group by a.artist_id,b.ds
 ;
 
 --建立索引

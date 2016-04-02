@@ -1,5 +1,5 @@
 clc;clear;close all;
-% data=importdata('data/song_times.mat');
+data=importdata('data/song_times.mat');
 
 data0=double(importdata('data/artist_times.mat'));
 train_idx=1:122;
@@ -14,6 +14,7 @@ prediction=mean_play*ones(1,size(target,2));
 F1=calculateF(target,prediction);
 
 %% 一阶多项式拟合
+%{
 n=size(data_train,2);
 x=1:n;
 y=data_train(:,:,1);
@@ -29,9 +30,16 @@ m=123:183;
 prediction=a*m+b*ones(size(m));
 F2=calculateF(target,prediction);
 
-for i1=1:10
-figure;
-plot(train_idx,data_train(i1,:,1));
-hold on;
-plot(val_idx,target(i1,:),val_idx,prediction(i1,:));
-end
+% for i1=1:10
+% figure;
+% plot(train_idx,data_train(i1,:,1));
+% hold on;
+% plot(val_idx,target(i1,:),val_idx,prediction(i1,:));
+% end
+%}
+%% ARMAX模型
+
+
+
+
+
