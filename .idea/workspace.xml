@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="3d6fab9b-05b3-409a-a7b7-6838777ad95b" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.m" afterPath="$PROJECT_DIR$/main.m" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/记录.docx" afterPath="$PROJECT_DIR$/记录.docx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pretreatment/data_loader.py" afterPath="$PROJECT_DIR$/pretreatment/data_loader.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/s1.sql" afterPath="$PROJECT_DIR$/s1.sql" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/计算F值.sql" afterPath="$PROJECT_DIR$/计算F值.sql" />
-    </list>
+    <list default="true" id="3d6fab9b-05b3-409a-a7b7-6838777ad95b" name="Default" comment="" />
     <ignored path="tianchi.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />

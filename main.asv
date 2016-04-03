@@ -1,6 +1,7 @@
 clc;clear;close all;
-train_idx=1:122;
-val_idx=123:183;
+intervation=122;%122,153
+train_idx=1:intervation;
+val_idx=intervation+1:183;
 
 data_song=double(importdata('data/song_times.mat'));
 data_artist=double(importdata('data/artist_times.mat'));
@@ -16,7 +17,7 @@ prediction=mean_play*ones(1,size(target,2));
 F1=calculateF(target,prediction);
 %}
 %% 一阶多项式拟合
-%
+%{
 n=size(data_train,2);
 x=1:n;
 y=data_train(:,:,1);
@@ -28,7 +29,7 @@ s4=sum(x.^2);
 
 a=(n*s3-s1*s2)/(n*s4-s1*s1);
 b=(s4*s2-s3*s1)/(n*s4-s1*s1);
-m=123:183;
+m=val_idx;
 prediction=a*m+b*ones(size(m));
 F2=calculateF(target,prediction);
 
@@ -73,9 +74,45 @@ F3=calculateF(target,prediction);
 %}
 %% ARMAX模型
 
-model=my_arma(x,y);
-y=my_predict();
+% model=my_arma(x,y);
+% y=my_predict();
 
+%% 梯度下降
+song_idx=3;
+y=data_train(song_idx,:,1)';
+sta=122;
+m=20;
+[theta,bias,S,L]=my_arma(y,sta,m);
+figure;
+subplot(211);
+plot(L);
+title('L');
+subplot(212);
+plot(theta);
+title('\theta')
 
-
+%预测
+y0=y(end+1-m:end);
+n=size(target,2);
+P=my_predict(theta,bias,n,y0);
+figure;
+plot(1:183,data_artist(song_idx,:,1),123:153,S,154:183,P);
+%% gradient check
+%{
+n=length(y)-sta;
+y0=y(sta+1-m:sta);
+T=y(sta+1:end);
+e=1e-9;
+i1=1;
+S=my_predict(theta,bias,n,y0);
+[grad_theta,grad_bias,~]=my_gradient(S,T,y0,theta);
+theta(i1)=theta(i1)+e;
+S=my_predict(theta,bias,n,y0);
+[~,~,L1]=my_gradient(S,T,y0,theta);
+theta(i1)=theta(i1)-2*e;
+S=my_predict(theta,bias,n,y0);
+[~,~,L2]=my_gradient(S,T,y0,theta);
+cal_g=(L1-L2)/2/e;
+acc_g=grad_theta(i1);
+%}
 

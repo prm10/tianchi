@@ -1,5 +1,5 @@
 clc;clear;close all;
-intervation=153;%122
+intervation=122;%122,153
 train_idx=1:intervation;
 val_idx=intervation+1:183;
 
@@ -11,13 +11,13 @@ target=data_artist(:,val_idx,1);
 data_train=data_artist(:,train_idx,:);
 F0=calculateF(target,target);
 %% 均值作为预测
-%
+%{
 mean_play=mean(data_train(:,:,1),2);
 prediction=mean_play*ones(1,size(target,2));
 F1=calculateF(target,prediction);
 %}
 %% 一阶多项式拟合
-%
+%{
 n=size(data_train,2);
 x=1:n;
 y=data_train(:,:,1);
@@ -41,7 +41,7 @@ F2=calculateF(target,prediction);
 % end
 %}
 %% 基于song的预测
-%
+%{
 %检验数据
 % for i1=1:10:50
 %     song_idx=artist_song{i1}+1;
@@ -78,6 +78,41 @@ F3=calculateF(target,prediction);
 % y=my_predict();
 
 %% 梯度下降
-model_gradient=my_arma(x,y,m);
+song_idx=1;
+y=data_train(song_idx,:,1)';
+sta=62;
+m=10;
+[theta,bias,S,L]=my_arma(y,sta,m);
+figure;
+subplot(211);
+plot(L);
+title('L');
+subplot(212);
+plot(theta);
+title('\theta')
 
+%预测
+y0=y(end+1-m:end);
+n=size(target,2);
+P=my_predict(theta,bias,n,y0);
+figure;
+plot(1:183,data_artist(song_idx,:,1),sta+1:intervation,S,intervation+1:183,P);
+%% gradient check
+%{
+n=length(y)-sta;
+y0=y(sta+1-m:sta);
+T=y(sta+1:end);
+e=1e-9;
+i1=1;
+S=my_predict(theta,bias,n,y0);
+[grad_theta,grad_bias,~]=my_gradient(S,T,y0,theta);
+theta(i1)=theta(i1)+e;
+S=my_predict(theta,bias,n,y0);
+[~,~,L1]=my_gradient(S,T,y0,theta);
+theta(i1)=theta(i1)-2*e;
+S=my_predict(theta,bias,n,y0);
+[~,~,L2]=my_gradient(S,T,y0,theta);
+cal_g=(L1-L2)/2/e;
+acc_g=grad_theta(i1);
+%}
 
