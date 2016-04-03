@@ -10,6 +10,8 @@ select sum((1-d.error)*e.weight) from
 	) d 
 	join
 	(
-		select artist_id,sqrt(sum(times)) as weight from tianchi.artist_day_plays group by artist_id
+		select artist_id,sqrt(sum(times)) as weight from tianchi.artist_day_plays
+			where ds>=20150701
+		group by artist_id
 	) e 
 	on d.artist_id=e.artist_id 

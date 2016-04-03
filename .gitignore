@@ -51,3 +51,5 @@ data/mars_tianchi_user_actions.zip
 *.mat
 *.pickle
 *.pyc
+*.jpg
+~WRL0616.tmp

@@ -17,13 +17,14 @@ sc = data_loader.SongClass()
 ptr = encode.EncodeClass()
 
 # 将artist, song, user编码
-# ptr.encode(sc.song_artist_dict, sc.artist_song_dict)
+ptr.encode(sc.song_artist_dict, sc.artist_song_dict)
 # 读取编码信息
 ptr.load_all()
 
-# 扫描用户行为记录表
-data_loader.song_heard(ptr.song_dict)
-data_loader.artist_heard(ptr.artist_dict, sc.song_artist_dict)
+# 生成mat数据
+# data_loader.song_heard(ptr.song_dict)
+# data_loader.artist_heard(ptr.artist_dict, sc.song_artist_dict)
+# data_loader.artist_song_mat_gen(sc.artist_song_dict, ptr.artist_list, ptr.song_dict)
 # 加载用户行为矩阵
 # song_times = data_loader.load_mat('song_times')['song_times']
 

@@ -62,6 +62,20 @@ def artist_heard(artist_dict, sad):
 	print('save artist_times done.')
 
 
+def artist_song_mat_gen(artist_song_dict, artist_list, song_dict):
+	# 每个artist的序号对应的每首song的序号
+	artist_temp = []
+	for artist_id in artist_list:
+		song_temp = []
+		for song_id in artist_song_dict[artist_id]:
+			song_temp.append(song_dict[song_id])
+		song_temp = sorted(song_temp)
+		artist_temp.append(song_temp)
+	artist_song_mat = numpy.array(artist_temp, dtype=object)
+	sio.savemat('data/artist_song_mat.mat', {'artist_song_mat': artist_song_mat})
+	print('save artist_song_mat done.')
+
+
 class SongClass:
 	def __init__(self):
 		self.song_artist_dict = {}
@@ -75,6 +89,9 @@ class SongClass:
 			self.artist_song_dict.setdefault(artist_id, set()).add(song_id)
 		print len(self.artist_song_dict), ' artists recorded'
 		print len(self.song_artist_dict), ' songs recorded'
+		for song_id, song_set in self.song_artist_dict.iteritems():
+			if len(song_set) > 1:
+				print(song_id + ' have ' + str(len(song_set)) + ' artists')
 
 
 class UserClass:

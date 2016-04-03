@@ -1,0 +1,1 @@
+function my_arma(x,y,m)

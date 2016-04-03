@@ -51,15 +51,25 @@ group by song_id,ds
 --生成每个artist在第k天的播放量
 drop table if exists tianchi.artist_day_plays;
 create table tianchi.artist_day_plays as
-select a.artist_id,b.ds,sum(b.times) as times
+select d.artist_id,d.ds,
+	(case when (c.times is null) then 0 else c.times end) as times
 from
-	(select distinct artist_id,song_id from 
-		tianchi.mars_tianchi_songs
-	)a
-	left outer join
-	tianchi.song_day_plays b
-	on a.song_id=b.song_id
-group by a.artist_id,b.ds
+	(select a.artist_id,b.ds,sum(b.times) as times
+	from
+		(select distinct artist_id,song_id from 
+			tianchi.mars_tianchi_songs
+		)a
+		left outer join
+		tianchi.song_day_plays b
+		on a.song_id=b.song_id
+	group by a.artist_id,b.ds
+	) c 
+	right outer join 
+	(select artist_id,ds from
+		(select distinct artist_id from tianchi.mars_tianchi_songs) e,
+		(select distinct ds from tianchi.song_day_plays) f
+	) d 
+	on c.artist_id=d.artist_id and c.ds=d.ds 
 ;
 
 --建立索引
@@ -70,7 +80,7 @@ create index idx_artist_day_plays on tianchi.artist_day_plays (artist_id(32),ds)
 --预测表tianchi.predict_artist_day_plays 
 
 --method1：根据训练集20150301-20150630的平均播放量，预测验证集20150701-20150830
---F='17814.742692368567'
+--F='5097.0695694789965'
 drop table if exists tianchi.predict_artist_day_plays;
 create table tianchi.predict_artist_day_plays as
 select a.artist_id,b.ds,a.times from
@@ -86,7 +96,7 @@ select a.artist_id,b.ds,a.times from
 ;
 
 --method2：根据对训练集一阶多项式拟合，预测验证集20150701-20150830
---F='23365.13956473377'
+--F='3965.3461045839686'
 drop table if exists tianchi.predict_artist_day_plays;
 create table tianchi.predict_artist_day_plays as
 select b.artist_id,b.ds,
@@ -119,7 +129,7 @@ from
 	on a.artist_id=b.artist_id
 	
 --method3：根据对训练集的song进行一阶多项式拟合，预测验证集20150701-20150830
---F='23469.445045538723'
+--F='4391.425924601521'
 drop table if exists tianchi.predict_artist_day_plays;
 create table tianchi.predict_artist_day_plays as
 select d.artist_id,c.ds,sum(c.times) as times from
@@ -171,11 +181,14 @@ select sum((1-d.error)*e.weight) from
 	) d 
 	join
 	(
-		select artist_id,sqrt(sum(times)) as weight from tianchi.artist_day_plays group by artist_id
+		select artist_id,sqrt(sum(times)) as weight from tianchi.artist_day_plays
+			where ds>=20150701
+		group by artist_id
 	) e 
 	on d.artist_id=e.artist_id 
 
 
+--统计有两个以上artist的song。
 
 
 
