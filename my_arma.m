@@ -1,12 +1,13 @@
 function [theta,bias,S,L]=my_arma(y,m,n)
 %y长N,利用y的第1~m，预测第m+1~m+n个；到最后，用第N-n-m+1~N-n个，预测N-n+1~N，模型长度为m+1
+y=max(y,ones(size(y)));
 theta=normrnd(0,0.1,[m,1]);%zeros(m+1,1);
 bias=normrnd(0,0.1,1);
-loops=2e4;
-L=zeros(loops,1);
-lr=1e-2;
+loops=5e3;
+lr=0.5e-2;
 N=length(y);
 batch=N-n-m+1;
+L=zeros(loops,1);
 
 for i1=1:loops
     i2=mod(i1,batch);
@@ -17,3 +18,5 @@ for i1=1:loops
     theta=theta-lr*grad_theta;
     bias=bias-lr*grad_bias;
 end
+y0=y(batch:batch-1+m);
+S=my_predict(theta,bias,n,y0);

@@ -78,25 +78,30 @@ F3=calculateF(target,prediction);
 % y=my_predict();
 
 %% ÌÝ¶ÈÏÂ½µ
-song_idx=1;
-y=data_train(song_idx,:,1)';
-sta=62;
-m=10;
-[theta,bias,S,L]=my_arma(y,sta,m);
-figure;
-subplot(211);
-plot(L);
-title('L');
-subplot(212);
-plot(theta);
-title('\theta')
+prediction=zeros(50,61);
+for artist_idx=1:50
+    disp(artist_idx);
+    y=data_train(artist_idx,:,1)';
+    m=40;
+    n1=50;
+    [theta,bias,S,L]=my_arma(y,m,n1);
+%     figure;
+%     subplot(211);
+%     plot(L);
+%     title('L');
+%     subplot(212);
+%     plot(theta);
+%     title('\theta')
 
-%Ô¤²â
-y0=y(end+1-m:end);
-n=size(target,2);
-P=my_predict(theta,bias,n,y0);
-figure;
-plot(1:183,data_artist(song_idx,:,1),sta+1:intervation,S,intervation+1:183,P);
+    %Ô¤²â
+    y0=y(end+1-m:end);
+    n2=size(target,2);
+    P=my_predict(theta,bias,n2,y0);
+    prediction(artist_idx,:)=P;
+end
+F4=calculateF(target,prediction);
+%     figure;
+%     plot(1:183,data_artist(artist_idx,:,1),intervation-n1+1:intervation,S,intervation+1:183,P);
 %% gradient check
 %{
 n=length(y)-sta;
