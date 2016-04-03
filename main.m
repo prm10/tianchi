@@ -82,8 +82,8 @@ prediction=zeros(50,61);
 for artist_idx=1:50
     disp(artist_idx);
     y=data_train(artist_idx,:,1)';
-    m=40;
-    n1=50;
+    m=15;
+    n1=10;
     [theta,bias,S,L]=my_arma(y,m,n1);
 %     figure;
 %     subplot(211);
