@@ -1,5 +1,5 @@
 clc;clear;close all;
-intervation=122;%122,153
+intervation=137;%122,137,153
 train_idx=1:intervation;
 val_idx=intervation+1:183;
 
@@ -11,13 +11,13 @@ target=data_artist(:,val_idx,1);
 data_train=data_artist(:,train_idx,:);
 F0=calculateF(target,target);
 %% 均值作为预测
-%{
+%
 mean_play=mean(data_train(:,:,1),2);
 prediction=mean_play*ones(1,size(target,2));
 F1=calculateF(target,prediction);
 %}
 %% 一阶多项式拟合
-%{
+%
 n=size(data_train,2);
 x=1:n;
 y=data_train(:,:,1);
@@ -74,18 +74,15 @@ for i1=1:50
 end
 F3=calculateF(target,prediction);
 %}
-%% ARMAX模型
-
-% model=my_arma(x,y);
-% y=my_predict();
 
 %% 梯度下降
-prediction=zeros(50,61);
+%
+prediction=zeros(50,size(target,2));
 for artist_idx=1:50
     disp(artist_idx);
     y=data_train(artist_idx,:,1)';
-    m=15;
-    n1=10;
+    m=20;
+    n1=20;
     [theta,bias,S,L]=my_arma(y,m,n1);
 %     figure;
 %     subplot(211);
@@ -104,6 +101,7 @@ end
 F4=calculateF(target,prediction);
 %     figure;
 %     plot(1:183,data_artist(artist_idx,:,1),intervation-n1+1:intervation,S,intervation+1:183,P);
+%}
 %% gradient check
 %{
 n=length(y)-sta;
@@ -122,4 +120,14 @@ S=my_predict(theta,bias,n,y0);
 cal_g=(L1-L2)/2/e;
 acc_g=grad_theta(i1);
 %}
+%% xgb predict
+idx_test_x=46:137;
+test_x=squeeze(mean(data_song(:,idx_test_x,:),2));
+test_norm=max(test_x(:,1),ones(size(test_x(:,1))));
+predict_xgb=test_norm.*double(importdata('data/predict_xgb.mat'))';
+for i1=1:50
+    song_idx=artist_song{i1};
+    prediction(i1,:)=sum(predict_xgb(song_idx,:))*ones(1,size(target,2));
+end
+F5=calculateF(target,prediction);
 

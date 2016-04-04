@@ -33,7 +33,7 @@ def show_result(result):
 
 
 def load_mat(filename):
-	return sio.loadmat('data/' + filename + '.mat')[filename]
+	return sio.loadmat('data/' + filename + '.mat')
 
 
 def song_heard(song_dict):

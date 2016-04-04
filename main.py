@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy
 from pretreatment import data_loader
 from pretreatment import encode
+from model import x_model
 
 sc = data_loader.SongClass()
 # uc = data_loader.UserClass()
@@ -16,15 +17,15 @@ sc = data_loader.SongClass()
 ptr = encode.EncodeClass()
 
 # 将artist, song, user编码
-ptr.encode(sc.song_artist_dict, sc.artist_song_dict)
+# ptr.encode(sc.song_artist_dict, sc.artist_song_dict)
 # 读取编码信息
 ptr.load_all()
 
 # 生成mat数据
-data_loader.song_heard(ptr.song_dict)
-data_loader.artist_heard(ptr.artist_dict, sc.song_artist_dict)
-data_loader.artist_song_mat_gen(sc.artist_song_dict, ptr.artist_list, ptr.song_dict)
-data_loader.song_info_mat_gen(ptr.song_dict)
+# data_loader.song_heard(ptr.song_dict)
+# data_loader.artist_heard(ptr.artist_dict, sc.song_artist_dict)
+# data_loader.artist_song_mat_gen(sc.artist_song_dict, ptr.artist_list, ptr.song_dict)
+# data_loader.song_info_mat_gen(ptr.song_dict)
 # 加载mat数据
 # song_times = data_loader.load_mat('song_times')
 
@@ -66,3 +67,9 @@ for i1 in range(10):
 	plt.title(str(i1) + ':' + str(y.sum()))
 plt.show()
 '''
+
+# train model
+mc = x_model.ModelClass()
+# mc.cv()
+mc.train()
+mc.test()
