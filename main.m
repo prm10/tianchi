@@ -42,13 +42,15 @@ F2=calculateF(target,prediction);
 %}
 %% 基于song的预测
 %{
-%检验数据
-% for i1=1:10:50
-%     song_idx=artist_song{i1}+1;
-%     play_times=sum(data_song(song_idx,:,1));
-%     figure;
-%     plot(1:183,data_artist(i1,:,1),1:183,play_times);
-% end
+% 检验数据
+%{
+for i1=1:10:50
+    song_idx=artist_song{i1};
+    play_times=sum(data_song(song_idx,:,1));
+    figure;
+    plot(1:183,data_artist(i1,:,1),1:183,play_times);
+end
+%}
 song_train=data_song(:,train_idx,:);
 song_target=data_song(:,val_idx,1);
 
@@ -67,7 +69,7 @@ m=val_idx;
 song_prediction=a*m+b*ones(size(m));
 prediction=zeros(50,length(val_idx));
 for i1=1:50
-    song_idx=artist_song{i1}+1;
+    song_idx=artist_song{i1};
     prediction(i1,:)=sum(song_prediction(song_idx,:),1);
 end
 F3=calculateF(target,prediction);

@@ -7,6 +7,10 @@ import numpy
 import scipy.io as sio
 
 
+# from pretreatment.data_loader import *
+# date_diff('20150830', '20150301')+1
+
+
 def date_diff(str1, str2):
 	date1 = datetime.datetime.strptime(str1, "%Y%m%d")
 	date2 = datetime.datetime.strptime(str2, "%Y%m%d")
@@ -28,16 +32,8 @@ def show_result(result):
 			print artist, '\t', ds, '\t', num
 
 
-def get_song_publish_time(song_id0):
-	reader = csv.reader(open("data/mars_tianchi_songs.csv"))
-	for song_id, artist_id, publish_time, song_init_plays, Language, Gender in reader:
-		if song_id0 == song_id:
-			return publish_time
-	return None
-
-
 def load_mat(filename):
-	return sio.loadmat('data/' + filename + '.mat')
+	return sio.loadmat('data/' + filename + '.mat')[filename]
 
 
 def song_heard(song_dict):
@@ -68,12 +64,27 @@ def artist_song_mat_gen(artist_song_dict, artist_list, song_dict):
 	for artist_id in artist_list:
 		song_temp = []
 		for song_id in artist_song_dict[artist_id]:
-			song_temp.append(song_dict[song_id])
+			# start from 1
+			song_temp.append(song_dict[song_id] + 1)
 		song_temp = sorted(song_temp)
 		artist_temp.append(song_temp)
 	artist_song_mat = numpy.array(artist_temp, dtype=object)
 	sio.savemat('data/artist_song_mat.mat', {'artist_song_mat': artist_song_mat})
 	print('save artist_song_mat done.')
+
+
+def song_info_mat_gen(song_dict):
+	# publish_time, song_init_plays, language, gender
+	song_info_mat = numpy.zeros([len(song_dict), 4], dtype=long)
+	reader = csv.reader(open("data/mars_tianchi_songs.csv"))
+	for song_id, artist_id, publish_time, song_init_plays, language, gender in reader:
+		# 0301=1
+		song_info_mat[song_dict[song_id], 0] = date_diff(publish_time, '20150301') + 1
+		song_info_mat[song_dict[song_id], 1] = long(song_init_plays)
+		song_info_mat[song_dict[song_id], 2] = int(language)
+		song_info_mat[song_dict[song_id], 3] = int(gender)
+	sio.savemat('data/song_info_mat.mat', {'song_info_mat': song_info_mat})
+	print('save song_info_mat done.')
 
 
 class SongClass:

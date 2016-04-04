@@ -8,7 +8,6 @@ from pretreatment import encode
 
 sc = data_loader.SongClass()
 # uc = data_loader.UserClass()
-
 # uc.getValidation(sc.song_artist_dict)
 # uc.showResult(uc.val_result)
 # uc.songHeard(sc.song_artist_dict)
@@ -22,11 +21,12 @@ ptr.encode(sc.song_artist_dict, sc.artist_song_dict)
 ptr.load_all()
 
 # 生成mat数据
-# data_loader.song_heard(ptr.song_dict)
-# data_loader.artist_heard(ptr.artist_dict, sc.song_artist_dict)
-# data_loader.artist_song_mat_gen(sc.artist_song_dict, ptr.artist_list, ptr.song_dict)
-# 加载用户行为矩阵
-# song_times = data_loader.load_mat('song_times')['song_times']
+data_loader.song_heard(ptr.song_dict)
+data_loader.artist_heard(ptr.artist_dict, sc.song_artist_dict)
+data_loader.artist_song_mat_gen(sc.artist_song_dict, ptr.artist_list, ptr.song_dict)
+data_loader.song_info_mat_gen(ptr.song_dict)
+# 加载mat数据
+# song_times = data_loader.load_mat('song_times')
 
 # 分析一首歌的趋势
 # x = range(data_loader.date_diff('20150831', '20150301'))
