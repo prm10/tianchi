@@ -14,13 +14,24 @@ def get_data_from_mat():
 	test_f = data['test_f']
 	test_y = data['test_y']
 	test_w = data['test_w']
-	return xgb.DMatrix(train_f, label=train_y, weight=train_w), xgb.DMatrix(test_f, label=test_y, weight=test_w)
+	return xgb.DMatrix(train_f, label=train_y, weight=train_w, feature_names=data_name,
+	                   feature_types=data_type), xgb.DMatrix(test_f, label=test_y, weight=test_w,
+	                                                         feature_names=data_name, feature_types=data_type)
+
+
+# data_name = ['col' + str(i+1) for i in range(32)]
+# # 1:int, 4:int, 3:float ,8*3:float
+# data_type = ['int' for i in range(5)] + ['float' for i in range(27)]
+
+data_name = ['col' + str(i + 1) for i in range(81)]
+# 50:int, 4:int, 3:float ,8*3:float
+data_type = ['i' for i in range(50)] + ['int' for i in range(4)] + ['float' for i in range(27)
 
 
 class ModelClass:
 	def __init__(self):
 		self.param = {
-			'max_depth': 4,
+			'max_depth': 6,
 			'eta': 0.3,
 			# 'subsample': 1,
 			'min_child_weight': 100,
