@@ -219,6 +219,27 @@ select song_id,nums from
 
 
 
+--每个song在inter_time之前的各项特征
+--unique user
+
+set @inter_time_train=92;
+set @inter_time_test=inter_time_train+45;
+
+drop table if exists song_f1_train;
+create table song_f1_train as 
+select song_id, count(distinct user_id) as f1
+from mars_tianchi_user_actions
+where action_type='1' 
+and datediff(str_to_date(cast(ds as char),'%Y%m%d'),str_to_date(cast(20150301 as char),'%Y%m%d'))<=@inter_time_train
+and datediff(str_to_date(cast(ds as char),'%Y%m%d'),str_to_date(cast(20150301 as char),'%Y%m%d'))>@inter_time_train-7
+group by song_id
+;
+
+
+
+
+
+
 
 
 

@@ -25,7 +25,7 @@ def get_data_from_mat():
 
 data_name = ['col' + str(i + 1) for i in range(81)]
 # 50:int, 4:int, 3:float ,8*3:float
-data_type = ['i' for i in range(50)] + ['int' for i in range(4)] + ['float' for i in range(27)
+data_type = ['i' for i in range(50)] + ['int' for i in range(4)] + ['float' for i in range(27)]
 
 
 class ModelClass:
