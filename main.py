@@ -27,23 +27,25 @@ ptr.load_all()
 # data_loader.artist_song_mat_gen(sc.artist_song_dict, ptr.artist_list, ptr.song_dict)
 # data_loader.song_info_mat_gen(ptr.song_dict)
 # 加载mat数据
-# song_times = data_loader.load_mat('song_times')
+song_times = data_loader.load_mat('song_times')['song_times']
+song_info = data_loader.load_mat('song_info_mat')['song_info_mat']
 
 # 分析一首歌的趋势
 # x = range(data_loader.date_diff('20150831', '20150301'))
 # for i1 in range(0, len(ptr.song_list)):
-'''
-for i1 in range(0, 10):
-    # print 'choose the song: %s' % ptr.song_list[i1]
-    print(str(i1) + ':' + ptr.song_list[i1])
-    song = song_times[i1, :, :]
-    plt.figure()
-    plt.plot(song, '-*')
-    plt.title(
-        'publish time: ' + str(data_loader.date_diff(data_loader.get_song_publish_time(ptr.song_list[i1]), '20150301')))
-    plt.xlabel('days')
+# mean_song=song_times[:,:,:].mean(axis=1)
+for i1 in range(0, 100,20):
+	# print 'choose the song: %s' % ptr.song_list[i1]
+	print(str(i1) + ':' + ptr.song_list[i1])
+	song = song_times[i1, :, 0:2]
+	plt.figure()
+	plt.plot(song / song.mean(axis=0), '-*')
+	plt.title(
+		str(song_info[i1, 0]) + ',' + str(song_info[i1, 1]) + ',' + str(song_info[i1, 2]) + ',' + str(song_info[i1, 3]))
+	plt.xlabel('days')
+	plt.legend(['play','download','collect'])
 plt.show()
-'''
+
 # 分析一个artist的歌曲热度
 '''
 n = data_loader.date_diff('20150831', '20150301')
@@ -68,8 +70,10 @@ for i1 in range(10):
 plt.show()
 '''
 
+'''
 # train model
 mc = x_model.ModelClass()
 # mc.cv()
 mc.train()
 mc.test()
+'''

@@ -58,3 +58,6 @@ data/mars_tianchi_user_actions.zip
 *.zip
 *.pyc
 *.xml
+*.xml
+*.pyc
+*.mat

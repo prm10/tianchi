@@ -11,9 +11,9 @@ import scipy.io as sio
 # date_diff('20150830', '20150301')+1
 
 
-def date_diff(str1, str2):
+def date_idx(str1):
 	date1 = datetime.datetime.strptime(str1, "%Y%m%d")
-	date2 = datetime.datetime.strptime(str2, "%Y%m%d")
+	date2 = datetime.datetime.strptime('20150301', "%Y%m%d")
 	return (date1 - date2).days
 
 
@@ -38,22 +38,22 @@ def load_mat(filename):
 
 def song_heard(song_dict):
 	# 统计song的次数：歌曲序号、时间序号、行为种类
-	song_times = numpy.zeros([len(song_dict), date_diff('20150831', '20150301'), 3], numpy.uint32)
+	song_times = numpy.zeros([len(song_dict), date_idx('20150831'), 3], numpy.uint32)
 	reader = csv.reader(open("data/mars_tianchi_user_actions.csv"))
 	for user_id, song_id, gmt_create, action_type, ds in reader:
 		# if action_type == '1' and '20150301' <= ds < '20150701':
-		song_times[song_dict[song_id], date_diff(ds, '20150301'), int(action_type) - 1] += 1
+		song_times[song_dict[song_id], date_idx(ds), int(action_type) - 1] += 1
 	sio.savemat('data/song_times.mat', {'song_times': song_times})
 	print('save song_times done.')
 
 
 def artist_heard(artist_dict, sad):
 	# 统计artist的次数：歌曲序号、时间序号、行为种类
-	artist_times = numpy.zeros([len(artist_dict), date_diff('20150831', '20150301'), 3], numpy.uint32)
+	artist_times = numpy.zeros([len(artist_dict), date_idx('20150831'), 3], numpy.uint32)
 	reader = csv.reader(open("data/mars_tianchi_user_actions.csv"))
 	for user_id, song_id, gmt_create, action_type, ds in reader:
 		for artist_id in sad[song_id]:
-			artist_times[artist_dict[artist_id], date_diff(ds, '20150301'), int(action_type) - 1] += 1
+			artist_times[artist_dict[artist_id], date_idx(ds), int(action_type) - 1] += 1
 	sio.savemat('data/artist_times.mat', {'artist_times': artist_times})
 	print('save artist_times done.')
 
@@ -79,7 +79,7 @@ def song_info_mat_gen(song_dict):
 	reader = csv.reader(open("data/mars_tianchi_songs.csv"))
 	for song_id, artist_id, publish_time, song_init_plays, language, gender in reader:
 		# 0301=1
-		song_info_mat[song_dict[song_id], 0] = date_diff(publish_time, '20150301') + 1
+		song_info_mat[song_dict[song_id], 0] = date_idx(publish_time) + 1
 		song_info_mat[song_dict[song_id], 1] = long(song_init_plays)
 		song_info_mat[song_dict[song_id], 2] = int(language)
 		song_info_mat[song_dict[song_id], 3] = int(gender)
@@ -107,34 +107,16 @@ class SongClass:
 
 class UserClass:
 	def __init__(self):
-		self.val_result = {}
-		self.song_list = []
-		self.song_dict = {}
-		self.artist_list = []
-		self.artist_dict = {}
+		self.d_u_t=[None]*date_idx('20150831')
 
-	def get_validation(self, sad):
+	def get_data(self,song0):
 		reader = csv.reader(open("data/mars_tianchi_user_actions.csv"))
 		for user_id, song_id, gmt_create, action_type, ds in reader:
-			if action_type == '1' and '20150701' <= ds < '20150901':
-				artists = sad[song_id]
-				for artist in artists:
-					self.val_result.setdefault(artist, {}).setdefault(ds, 0)
-					self.val_result[artist][ds] += 1
-		print 'records of %d artists of validation has generated.' % len(self.val_result)
+			if song_id==song0:
+				if self.d_u_t[date_idx(ds)] is None:
+					self.d_u_t[date_idx(ds)]=[]
+				self.d_u_t[date_idx(ds)].append((user_id,action_type))
 
-	def artist_heard(self, sad, asd):
-		self.artist_list = asd.keys()
-		self.artist_dict = dict.fromkeys(self.artist_list, 0)
-		i = 0
-		for artist_id in self.artist_list:
-			self.artist_dict[artist_id] = i
-			i += 1
+	def feature_with_ds(self):
 
-		artist_times = numpy.zeros([len(self.artist_dict), date_diff('20150701', '20150301')], numpy.uint16)
-		reader = csv.reader(open("data/mars_tianchi_user_actions.csv"))
-		for user_id, song_id, gmt_create, action_type, ds in reader:
-			if action_type == '1' and '20150301' <= ds < '20150701':
-				for artist_id in sad[song_id]:
-					artist_times[self.artist_dict[artist_id], date_diff(ds, '20150301')] += 1
-		sio.savemat('data/artist_times.mat', {'artist_times': artist_times})
+
