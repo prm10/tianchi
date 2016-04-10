@@ -107,16 +107,16 @@ class SongClass:
 
 class UserClass:
 	def __init__(self):
-		self.d_u_t=[None]*date_idx('20150831')
+		#ds, user_id, action_type
+		self.d_u_t = numpy.zeros([date_idx('20150831'), 349946, 3], dtype=numpy.bool)
 
-	def get_data(self,song0):
+	def get_data(self, song0 ,user_dict):
 		reader = csv.reader(open("data/mars_tianchi_user_actions.csv"))
 		for user_id, song_id, gmt_create, action_type, ds in reader:
-			if song_id==song0:
-				if self.d_u_t[date_idx(ds)] is None:
-					self.d_u_t[date_idx(ds)]=[]
-				self.d_u_t[date_idx(ds)].append((user_id,action_type))
+			if song_id == song0:
+				self.d_u_t[date_idx(ds),user_dict[user_id],int(action_type)-1]=True
 
 	def feature_with_ds(self):
-
-
+		# 每天的独立用户
+		stat=self.d_u_t.sum(axis=1)
+		
