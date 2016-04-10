@@ -84,6 +84,7 @@ from
 	) a,
 	(select (@rowNum :=0) ) b
 order by times desc,artist_id asc
+;
 --生成每个song的播放量的降序排列
 drop table if exists song_idx;
 create table song_idx as
@@ -95,7 +96,7 @@ from
 	) a,
 	(select (@rowNum :=0) ) b
 order by times desc,song_id asc
-
+;
 
 
 --预测表tianchi.predict_artist_day_plays 
@@ -220,10 +221,10 @@ select song_id,nums from
 
 
 --每个song在inter_time之前的各项特征
---unique user
 
+--7天内的unique user
 set @inter_time_train=92;
-set @inter_time_test=inter_time_train+45;
+set @inter_time_test=@inter_time_train+45;
 
 drop table if exists song_f1_train;
 create table song_f1_train as 
