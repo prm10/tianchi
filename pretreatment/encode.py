@@ -24,11 +24,11 @@ class EncodeClass:
         i0 = 0
         reader = csv.reader(open("data/mars_tianchi_user_actions.csv"))
         for user_id, song_id, gmt_create, action_type, ds in reader:
+            user_times.setdefault(user_id, 0)
             if action_type == '1':
                 for artist_id in sad[song_id]:
                     artist_times[artist_id] += 1
                 song_times[song_id] += 1
-                user_times.setdefault(user_id, 0)
                 user_times[user_id] += 1
                 i0 += 1
                 # if i0>1000:
